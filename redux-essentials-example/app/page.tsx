@@ -1,7 +1,5 @@
+import { PostsList } from "./ui/posts/PostsList";
+
 export default function Home() {
-  return (
-    <section>
-      <h2>Welcome to the Redux Essentials example app!</h2>
-    </section>
-  );
+  return <PostsList />;
 }

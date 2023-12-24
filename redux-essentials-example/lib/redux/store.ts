@@ -6,3 +6,6 @@ export const reduxStore = configureStore({
     posts: postsReducer,
   },
 });
+
+/* Types */
+export type ReduxState = ReturnType<typeof reduxStore.getState>;
