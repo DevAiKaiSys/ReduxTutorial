@@ -1,12 +1,29 @@
 "use client";
-import { ReduxState } from "@/lib/redux/store";
 import Link from "next/link";
 import React from "react";
 import { useSelector } from "react-redux";
 import { PostAuthor } from "./PostAuthor";
 import { TimeAgo } from "./TimeAgo";
 import { ReactionButtons } from "./ReactionButtons";
-import { selectAllPosts } from "@/lib/redux/posts/postsSlice";
+import { Post, selectAllPosts } from "@/lib/redux/posts/postsSlice";
+
+const PostExcerpt = ({ post }: { post: Post }) => {
+  return (
+    <article className="post-excerpt" key={post.id}>
+      <h3>{post.title}</h3>
+      <div>
+        <PostAuthor userId={post.user} />
+        <TimeAgo timestamp={post.date} />
+      </div>
+      <p className="post-content">{post.content.substring(0, 100)}</p>
+
+      <ReactionButtons post={post} />
+      <Link href={`/posts/${post.id}`} className="button muted-button">
+        View Post
+      </Link>
+    </article>
+  );
+};
 
 export const PostsList = () => {
   // const posts = useSelector((state: ReduxState) => state.posts);
@@ -17,19 +34,22 @@ export const PostsList = () => {
     .slice()
     .sort((a, b) => b.date.localeCompare(a.date));
 
+  // const renderedPosts = orderedPosts.map((post) => (
+  //   <article className="post-excerpt" key={post.id}>
+  //     <h3>{post.title}</h3>
+  //     <div>
+  //       <PostAuthor userId={post.user} />
+  //       <TimeAgo timestamp={post.date} />
+  //     </div>
+  //     <p className="post-content">{post.content.substring(0, 100)}</p>
+  //     <ReactionButtons post={post} />
+  //     <Link href={`/posts/${post.id}`} className="button muted-button">
+  //       View Post
+  //     </Link>
+  //   </article>
+  // ));
   const renderedPosts = orderedPosts.map((post) => (
-    <article className="post-excerpt" key={post.id}>
-      <h3>{post.title}</h3>
-      <div>
-        <PostAuthor userId={post.user} />
-        <TimeAgo timestamp={post.date} />
-      </div>
-      <p className="post-content">{post.content.substring(0, 100)}</p>
-      <ReactionButtons post={post} />
-      <Link href={`/posts/${post.id}`} className="button muted-button">
-        View Post
-      </Link>
-    </article>
+    <PostExcerpt key={post.id} post={post} />
   ));
 
   return (

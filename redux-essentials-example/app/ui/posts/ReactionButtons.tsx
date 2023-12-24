@@ -1,4 +1,5 @@
 import {
+  Post,
   PostReactions,
   PostSliceState,
   reactionAdded,
@@ -14,7 +15,7 @@ const reactionEmoji = {
   eyes: "👀",
 };
 
-export const ReactionButtons = ({ post }: { post: PostSliceState }) => {
+export const ReactionButtons = ({ post }: { post: Post }) => {
   const dispatch = useDispatch();
 
   const reactionButtons = Object.entries(reactionEmoji).map(([name, emoji]) => {
