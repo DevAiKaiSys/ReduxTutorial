@@ -8,6 +8,13 @@ const initialState: PostSliceState[] = [
     content: "Hello!",
     user: "0",
     date: sub(new Date(), { minutes: 10 }).toISOString(),
+    reactions: {
+      thumbsUp: 0,
+      hooray: 0,
+      heart: 0,
+      rocket: 0,
+      eyes: 0,
+    },
   },
   {
     id: "2",
@@ -15,6 +22,13 @@ const initialState: PostSliceState[] = [
     content: "More text",
     user: "2",
     date: sub(new Date(), { minutes: 5 }).toISOString(),
+    reactions: {
+      thumbsUp: 0,
+      hooray: 0,
+      heart: 0,
+      rocket: 0,
+      eyes: 0,
+    },
   },
 ];
 
@@ -34,6 +48,13 @@ const postsSlice = createSlice({
             title,
             content,
             user: userId,
+            reactions: {
+              thumbsUp: 0,
+              hooray: 0,
+              heart: 0,
+              rocket: 0,
+              eyes: 0,
+            },
           },
         };
       },
@@ -54,10 +75,19 @@ export const { postAdded, postUpdated } = postsSlice.actions;
 export default postsSlice.reducer;
 
 /* Types */
-export type PostSliceState = {
+export interface PostSliceState {
   id: string;
   title: string;
   content: string;
   user?: string;
   date: string;
+  reactions: PostReactions;
+}
+
+export type PostReactions = {
+  thumbsUp: number;
+  hooray: number;
+  heart: number;
+  rocket: number;
+  eyes: number;
 };

@@ -6,6 +6,7 @@ import React from "react";
 import { useSelector } from "react-redux";
 import { PostAuthor } from "./PostAuthor";
 import { TimeAgo } from "./TimeAgo";
+import { ReactionButtons } from "./ReactionButtons";
 
 export const SinglePostPage = (/* { match } */) => {
   //   const { postId } = match.params;
@@ -32,6 +33,7 @@ export const SinglePostPage = (/* { match } */) => {
           <TimeAgo timestamp={post.date} />
         </div>
         <p className="post-content">{post.content}</p>
+        <ReactionButtons post={post} />
         <Link href={`/editPost/${post.id}`} className="button">
           Edit Post
         </Link>
