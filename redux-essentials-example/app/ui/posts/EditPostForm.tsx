@@ -1,15 +1,18 @@
 "use client";
-import { postUpdated } from "@/lib/redux/posts/postsSlice";
+import { postUpdated, selectPostById } from "@/lib/redux/posts/postsSlice";
 import { ReduxState } from "@/lib/redux/store";
 import { useParams, useRouter } from "next/navigation";
 import React, { ChangeEvent, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 export const EditPostForm = () => {
-  const { postId } = useParams();
+  const { postId }: { postId: string } = useParams();
 
+  // const post = useSelector((state: ReduxState) =>
+  //   state.posts.find((post) => post.id === postId)
+  // );
   const post = useSelector((state: ReduxState) =>
-    state.posts.find((post) => post.id === postId)
+    selectPostById(state, postId)
   );
 
   const [title, setTitle] = useState(post?.title);

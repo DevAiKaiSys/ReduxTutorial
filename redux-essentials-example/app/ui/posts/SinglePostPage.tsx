@@ -7,13 +7,17 @@ import { useSelector } from "react-redux";
 import { PostAuthor } from "./PostAuthor";
 import { TimeAgo } from "./TimeAgo";
 import { ReactionButtons } from "./ReactionButtons";
+import { selectPostById } from "@/lib/redux/posts/postsSlice";
 
 export const SinglePostPage = (/* { match } */) => {
   //   const { postId } = match.params;
-  const { postId } = useParams();
+  const { postId }: { postId: string } = useParams();
 
+  // const post = useSelector((state: ReduxState) =>
+  //   state.posts.find((post) => post.id === postId)
+  // );
   const post = useSelector((state: ReduxState) =>
-    state.posts.find((post) => post.id === postId)
+    selectPostById(state, postId)
   );
 
   if (!post) {
