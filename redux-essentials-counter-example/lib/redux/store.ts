@@ -1,8 +1,11 @@
 import { configureStore } from "@reduxjs/toolkit";
-import counterReducer from "./slices/counterSlice";
+import counterReducer, { incrementAsync } from "./slices/counterSlice";
 
-export default configureStore({
+export const reduxStore = configureStore({
   reducer: {
     counter: counterReducer,
   },
 });
+
+/* Types */
+export type ReduxState = ReturnType<typeof reduxStore.getState>;
