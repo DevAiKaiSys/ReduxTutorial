@@ -1,11 +1,13 @@
 "use client";
 import Link from "next/link";
-import React from "react";
-import { useSelector } from "react-redux";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { PostAuthor } from "./PostAuthor";
 import { TimeAgo } from "./TimeAgo";
 import { ReactionButtons } from "./ReactionButtons";
-import { Post, selectAllPosts } from "@/lib/redux/posts/postsSlice";
+import { Post, fetchPosts, selectAllPosts } from "@/lib/redux/posts/postsSlice";
+import { ReduxState, reduxStore } from "@/lib/redux/store";
+import { Spinner } from "../Spinner";
 
 const PostExcerpt = ({ post }: { post: Post }) => {
   return (
@@ -26,13 +28,16 @@ const PostExcerpt = ({ post }: { post: Post }) => {
 };
 
 export const PostsList = () => {
+  const dispatch = useDispatch();
   // const posts = useSelector((state: ReduxState) => state.posts);
   const posts = useSelector(selectAllPosts);
 
   // Sort posts in reverse chronological order by datetime string
-  const orderedPosts = posts
-    .slice()
-    .sort((a, b) => b.date.localeCompare(a.date));
+  // const orderedPosts = posts
+  //   .slice()
+  //   .sort((a, b) => b.date.localeCompare(a.date));
+  const postStatus = useSelector((state: ReduxState) => state.posts.status);
+  const error = useSelector((state: ReduxState) => state.posts.error);
 
   // const renderedPosts = orderedPosts.map((post) => (
   //   <article className="post-excerpt" key={post.id}>
@@ -48,14 +53,39 @@ export const PostsList = () => {
   //     </Link>
   //   </article>
   // ));
-  const renderedPosts = orderedPosts.map((post) => (
-    <PostExcerpt key={post.id} post={post} />
-  ));
+  // const renderedPosts = orderedPosts.map((post) => (
+  //   <PostExcerpt key={post.id} post={post} />
+  // ));
+
+  useEffect(() => {
+    if (postStatus === "idle") {
+      // dispatch(fetchPosts());
+      reduxStore.dispatch(fetchPosts());
+    }
+  }, [postStatus, dispatch]);
+
+  let content;
+
+  if (postStatus === "loading") {
+    content = <Spinner text="Loading..." />;
+  } else if (postStatus === "succeeded") {
+    // Sort posts in reverse chronological order by datetime string
+    const orderedPosts = posts
+      .slice()
+      .sort((a, b) => b.date.localeCompare(a.date));
+
+    content = orderedPosts.map((post) => (
+      <PostExcerpt key={post.id} post={post} />
+    ));
+  } else if (postStatus === "failed") {
+    content = <div>{error}</div>;
+  }
 
   return (
     <section className="posts-list">
       <h2>Posts</h2>
-      {renderedPosts}
+      {/* {renderedPosts} */}
+      {content}
     </section>
   );
 };

@@ -1,4 +1,9 @@
-import { PayloadAction, createSlice, nanoid } from "@reduxjs/toolkit";
+import {
+  PayloadAction,
+  createAsyncThunk,
+  createSlice,
+  nanoid,
+} from "@reduxjs/toolkit";
 import { sub } from "date-fns";
 import { ReduxState } from "../store";
 
@@ -37,6 +42,16 @@ const initialState: PostSliceState = {
   status: "idle",
   error: null,
 };
+
+export const fetchPosts = createAsyncThunk("posts/fetchPosts", async () => {
+  const response = await fetch("/api/posts", {
+    method: "GET",
+    headers: { "Content-Type": "application/json" },
+  });
+  // return response.data;
+  const result = await response.json();
+  return result;
+});
 
 const postsSlice = createSlice({
   name: "posts",
@@ -87,6 +102,21 @@ const postsSlice = createSlice({
       }
     },
   },
+  extraReducers(builder) {
+    builder
+      .addCase(fetchPosts.pending, (state, action) => {
+        state.status = "loading";
+      })
+      .addCase(fetchPosts.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        // Add any fetched posts to the array
+        state.posts = state.posts.concat(action.payload);
+      })
+      .addCase(fetchPosts.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.error.message;
+      });
+  },
 });
 
 export const { postAdded, postUpdated, reactionAdded } = postsSlice.actions;
@@ -110,7 +140,7 @@ export type PostSliceState = {
   // reactions: PostReactions;
   posts: Post[];
   status: "idle" | "loading" | "succeeded" | "failed";
-  error: string | null;
+  error?: string | null;
 };
 
 export type Post = {
