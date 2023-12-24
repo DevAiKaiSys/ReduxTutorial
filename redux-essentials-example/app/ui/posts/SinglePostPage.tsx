@@ -1,5 +1,6 @@
 "use client";
 import { ReduxState } from "@/lib/redux/store";
+import Link from "next/link";
 import { useParams } from "next/navigation";
 import React from "react";
 import { useSelector } from "react-redux";
@@ -25,6 +26,9 @@ export const SinglePostPage = (/* { match } */) => {
       <article className="post">
         <h2>{post.title}</h2>
         <p className="post-content">{post.content}</p>
+        <Link href={`/editPost/${post.id}`} className="button">
+          Edit Post
+        </Link>
       </article>
     </section>
   );
