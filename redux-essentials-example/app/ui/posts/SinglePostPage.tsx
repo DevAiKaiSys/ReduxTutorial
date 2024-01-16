@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import React from "react";
 import { PostAuthor } from "./PostAuthor";
+import { TimeAgo } from "./TimeAgo";
 
 type Props = {};
 
@@ -27,7 +28,10 @@ export const SinglePostPage = ({}: /* match */ Props) => {
     <section>
       <article className="post">
         <h2>{post.title}</h2>
-        <PostAuthor userId={post.user} />
+        <div>
+          <PostAuthor userId={post.user} />
+          <TimeAgo timestamp={post.date} />
+        </div>
         <p className="post-content">{post.content}</p>
         <Link href={`/editPost/${post.id}`} className="button">
           Edit Post
