@@ -1,5 +1,6 @@
 "use client";
 import { useAppSelector } from "@/lib/redux/hooks";
+import Link from "next/link";
 import { useParams } from "next/navigation";
 import React from "react";
 
@@ -26,6 +27,9 @@ export const SinglePostPage = ({}: /* match */ Props) => {
       <article className="post">
         <h2>{post.title}</h2>
         <p className="post-content">{post.content}</p>
+        <Link href={`/editPost/${post.id}`} className="button">
+          Edit Post
+        </Link>
       </article>
     </section>
   );
