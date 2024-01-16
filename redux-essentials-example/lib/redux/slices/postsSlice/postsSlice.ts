@@ -6,13 +6,29 @@ const initialState: PostSliceState[] = [
     id: "1",
     title: "First Post!",
     content: "Hello!",
+    user: "0",
     date: sub(new Date(), { minutes: 10 }).toISOString(),
+    reactions: {
+      thumbsUp: 0,
+      hooray: 0,
+      heart: 0,
+      rocket: 0,
+      eyes: 0,
+    },
   },
   {
     id: "2",
     title: "Second Post",
     content: "More text",
+    user: "2",
     date: sub(new Date(), { minutes: 5 }).toISOString(),
+    reactions: {
+      thumbsUp: 0,
+      hooray: 0,
+      heart: 0,
+      rocket: 0,
+      eyes: 0,
+    },
   },
 ];
 
@@ -32,9 +48,26 @@ const postsSlice = createSlice({
             title,
             content,
             user: userId,
+            reactions: {
+              thumbsUp: 0,
+              hooray: 0,
+              heart: 0,
+              rocket: 0,
+              eyes: 0,
+            },
           },
         };
       },
+    },
+    reactionAdded(
+      state,
+      action: PayloadAction<{ postId: string; reaction: keyof PostReactions }>
+    ) {
+      const { postId, reaction } = action.payload;
+      const existingPost = state.find((post) => post.id === postId);
+      if (existingPost) {
+        existingPost.reactions[reaction]++;
+      }
     },
     postUpdated(state, action) {
       const { id, title, content } = action.payload;
@@ -47,7 +80,7 @@ const postsSlice = createSlice({
   },
 });
 
-export const { postAdded, postUpdated } = postsSlice.actions;
+export const { postAdded, postUpdated, reactionAdded } = postsSlice.actions;
 
 export default postsSlice.reducer;
 
@@ -60,4 +93,13 @@ export type Post = {
   content: string;
   user?: string;
   date?: string;
+  reactions: PostReactions;
+};
+
+export type PostReactions = {
+  thumbsUp: number;
+  hooray: number;
+  heart: number;
+  rocket: number;
+  eyes: number;
 };

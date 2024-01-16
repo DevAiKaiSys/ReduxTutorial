@@ -5,6 +5,7 @@ import { useParams } from "next/navigation";
 import React from "react";
 import { PostAuthor } from "./PostAuthor";
 import { TimeAgo } from "./TimeAgo";
+import { ReactionButtons } from "./ReactionButtons";
 
 type Props = {};
 
@@ -33,6 +34,7 @@ export const SinglePostPage = ({}: /* match */ Props) => {
           <TimeAgo timestamp={post.date} />
         </div>
         <p className="post-content">{post.content}</p>
+        <ReactionButtons post={post} />
         <Link href={`/editPost/${post.id}`} className="button">
           Edit Post
         </Link>
