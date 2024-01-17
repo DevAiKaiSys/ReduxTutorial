@@ -2,7 +2,10 @@
 import React, { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
-import { postUpdated } from "@/lib/redux/slices/postsSlice/postsSlice";
+import {
+  postUpdated,
+  selectPostById,
+} from "@/lib/redux/slices/postsSlice/postsSlice";
 
 type Props = {};
 
@@ -10,9 +13,10 @@ export const EditPostForm = ({}: /* match */ Props) => {
   //   const { postId } = match.params;
   const { postId } = useParams<{ postId: string }>();
 
-  const post = useAppSelector((state) =>
-    state.posts.find((post) => post.id === postId)
-  );
+  // const post = useAppSelector((state) =>
+  //   state.posts.find((post) => post.id === postId)
+  // );
+  const post = useAppSelector((state) => selectPostById(state, postId));
 
   const [title, setTitle] = useState(post?.title);
   const [content, setContent] = useState(post?.content);

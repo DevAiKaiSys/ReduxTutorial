@@ -5,9 +5,11 @@ import React from "react";
 import { PostAuthor } from "./PostAuthor";
 import { TimeAgo } from "./TimeAgo";
 import { ReactionButtons } from "./ReactionButtons";
+import { selectAllPosts } from "@/lib/redux/slices/postsSlice/postsSlice";
 
 export const PostsList = () => {
-  const posts = useAppSelector((state) => state.posts);
+  // const posts = useAppSelector((state) => state.posts);
+  const posts = useAppSelector(selectAllPosts);
 
   // const renderedPosts = posts.map((post) => (
   // Sort posts in reverse chronological order by datetime string
