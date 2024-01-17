@@ -1,6 +1,11 @@
-import { PayloadAction, createSlice, nanoid } from "@reduxjs/toolkit";
-import { sub } from "date-fns";
+import {
+  PayloadAction,
+  createAsyncThunk,
+  createSlice,
+  nanoid,
+} from "@reduxjs/toolkit";
 import { RootState } from "../../store";
+import { client } from "@/app/api/client";
 
 // const initialState: PostSliceState[] = [
 //   {
@@ -37,6 +42,11 @@ const initialState: PostSliceState = {
   status: "idle",
   error: null,
 };
+
+export const fetchPosts = createAsyncThunk("posts/fetchPosts", async () => {
+  const response = await client.get("/fakeApi/posts");
+  return response.data;
+});
 
 const postsSlice = createSlice({
   name: "posts",

@@ -1,15 +1,28 @@
 "use client";
-import { useAppSelector } from "@/lib/redux/hooks";
+import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
 import Link from "next/link";
-import React from "react";
+import React, { useEffect } from "react";
 import { PostAuthor } from "./PostAuthor";
 import { TimeAgo } from "./TimeAgo";
 import { ReactionButtons } from "./ReactionButtons";
-import { selectAllPosts } from "@/lib/redux/slices/postsSlice/postsSlice";
+import {
+  fetchPosts,
+  selectAllPosts,
+} from "@/lib/redux/slices/postsSlice/postsSlice";
 
 export const PostsList = () => {
+  const dispatch = useAppDispatch();
+
   // const posts = useAppSelector((state) => state.posts);
   const posts = useAppSelector(selectAllPosts);
+
+  const postStatus = useAppSelector((state) => state.posts.status);
+
+  useEffect(() => {
+    if (postStatus === "idle") {
+      dispatch(fetchPosts());
+    }
+  }, [postStatus, dispatch]);
 
   // const renderedPosts = posts.map((post) => (
   // Sort posts in reverse chronological order by datetime string
