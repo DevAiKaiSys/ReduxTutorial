@@ -40,3 +40,9 @@ npm install mock-socket
 ```
 npm i txtgen
 ```
+
+## Edit className
+
+```
+npm install classnames
+```
