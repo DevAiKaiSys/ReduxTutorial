@@ -9,6 +9,26 @@ import {
   fetchPosts,
   selectAllPosts,
 } from "@/lib/redux/slices/postsSlice/postsSlice";
+import type { Post } from "@/lib/redux/slices/postsSlice/postsSlice";
+import { Spinner } from "../Spinner";
+
+const PostExcerpt = ({ post }: { post: Post }) => {
+  return (
+    <article className="post-excerpt">
+      <h3>{post.title}</h3>
+      <div>
+        <PostAuthor userId={post.user} />
+        <TimeAgo timestamp={post.date} />
+      </div>
+      <p className="post-content">{post.content.substring(0, 100)}</p>
+
+      <ReactionButtons post={post} />
+      <Link href={`/posts/${post.id}`} className="button muted-button">
+        View Post
+      </Link>
+    </article>
+  );
+};
 
 export const PostsList = () => {
   const dispatch = useAppDispatch();
@@ -17,6 +37,7 @@ export const PostsList = () => {
   const posts = useAppSelector(selectAllPosts);
 
   const postStatus = useAppSelector((state) => state.posts.status);
+  const error = useAppSelector((state) => state.posts.error);
 
   useEffect(() => {
     if (postStatus === "idle") {
@@ -26,31 +47,49 @@ export const PostsList = () => {
 
   // const renderedPosts = posts.map((post) => (
   // Sort posts in reverse chronological order by datetime string
-  const orderedPosts = posts
-    .slice()
-    .sort((a, b) => (b.date ?? "").localeCompare(a.date ?? ""));
+  // const orderedPosts = posts
+  //   .slice()
+  //   .sort((a, b) => (b.date ?? "").localeCompare(a.date ?? ""));
 
-  const renderedPosts = orderedPosts.map((post) => {
-    return (
-      <article className="post-excerpt" key={post.id}>
-        <h3>{post.title}</h3>
-        <div>
-          <PostAuthor userId={post.user} />
-          <TimeAgo timestamp={post.date} />
-        </div>
-        <p className="post-content">{post.content.substring(0, 100)}</p>
-        <ReactionButtons post={post} />
-        <Link href={`/posts/${post.id}`} className="button muted-button">
-          View Post
-        </Link>
-      </article>
-    );
-  });
+  // const renderedPosts = orderedPosts.map((post) => {
+  //   return (
+  //     <article className="post-excerpt" key={post.id}>
+  //       <h3>{post.title}</h3>
+  //       <div>
+  //         <PostAuthor userId={post.user} />
+  //         <TimeAgo timestamp={post.date} />
+  //       </div>
+  //       <p className="post-content">{post.content.substring(0, 100)}</p>
+  //       <ReactionButtons post={post} />
+  //       <Link href={`/posts/${post.id}`} className="button muted-button">
+  //         View Post
+  //       </Link>
+  //     </article>
+  //   );
+  // });
+
+  let content;
+
+  if (postStatus === "loading") {
+    content = <Spinner text="Loading..." />;
+  } else if (postStatus === "succeeded") {
+    // Sort posts in reverse chronological order by datetime string
+    const orderedPosts = posts
+      .slice()
+      .sort((a, b) => (b.date ?? "").localeCompare(a.date ?? ""));
+
+    content = orderedPosts.map((post) => (
+      <PostExcerpt key={post.id} post={post} />
+    ));
+  } else if (postStatus === "failed") {
+    content = <div>{error}</div>;
+  }
 
   return (
     <section className="posts-list">
       <h2>Posts</h2>
-      {renderedPosts}
+      {/* {renderedPosts} */}
+      {content}
     </section>
   );
 };
