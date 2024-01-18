@@ -3,6 +3,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import postsReducer from "./slices/postsSlice/postsSlice";
 import usersReducer from "./slices/usersSlice/usersSlice";
 import notificationsReducer from "./slices/notificationsSlice/notificationsSlice";
+import { apiSlice } from "./api/apiSlice";
 
 export const makeStore = () => {
   return configureStore({
@@ -10,7 +11,10 @@ export const makeStore = () => {
       posts: postsReducer,
       users: usersReducer,
       notifications: notificationsReducer,
+      [apiSlice.reducerPath]: apiSlice.reducer,
     },
+    middleware: (getDefaultMiddleware) =>
+      getDefaultMiddleware().concat(apiSlice.middleware),
   });
 };
 
