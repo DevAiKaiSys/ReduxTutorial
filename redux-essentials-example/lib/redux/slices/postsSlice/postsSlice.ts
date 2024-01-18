@@ -185,7 +185,7 @@ export type Post = {
   id: string;
   title: string;
   content: string;
-  user?: string;
+  user: string;
   date: string;
   reactions: PostReactions;
 };

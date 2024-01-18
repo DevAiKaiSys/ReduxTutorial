@@ -1,6 +1,7 @@
 "use client";
 import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
 import { addNewPost } from "@/lib/redux/slices/postsSlice/postsSlice";
+import { selectAllUsers } from "@/lib/redux/slices/usersSlice/usersSlice";
 import React, { useState } from "react";
 
 export const AddPostForm = () => {
@@ -11,7 +12,8 @@ export const AddPostForm = () => {
 
   const dispatch = useAppDispatch();
 
-  const users = useAppSelector((state) => state.users);
+  // const users = useAppSelector((state) => state.users);
+  const users = useAppSelector(selectAllUsers);
 
   const onTitleChanged = (e: React.ChangeEvent<HTMLInputElement>) =>
     setTitle(e.target.value);
