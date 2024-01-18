@@ -1,19 +1,13 @@
 "use client";
-import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
 import Link from "next/link";
-import React, { useEffect, useMemo } from "react";
+import React, { useMemo } from "react";
 import { PostAuthor } from "./PostAuthor";
 import { TimeAgo } from "./TimeAgo";
 import { ReactionButtons } from "./ReactionButtons";
-import {
-  fetchPosts,
-  selectAllPosts,
-  selectPostById,
-  selectPostIds,
-} from "@/lib/redux/slices/postsSlice/postsSlice";
 import type { Post } from "@/lib/redux/slices/postsSlice/postsSlice";
 import { Spinner } from "../Spinner";
 import { useGetPostsQuery } from "@/lib/redux/api/apiSlice";
+import classnames from "classnames";
 
 // const PostExcerpt = ({ post }: { post: Post }) => {
 // let PostExcerpt: React.FC<{ postId: string }> = ({ postId }) => {
@@ -56,9 +50,11 @@ export const PostsList = () => {
   const {
     data: posts = [],
     isLoading,
+    isFetching,
     isSuccess,
     isError,
     error,
+    refetch,
   } = useGetPostsQuery();
 
   const sortedPosts = useMemo(() => {
@@ -114,9 +110,18 @@ export const PostsList = () => {
     content = <Spinner text="Loading..." />;
   } else if (isSuccess) {
     // content = posts.map((post) => <PostExcerpt key={post.id} post={post} />);
-    content = sortedPosts.map((post) => (
+    // content = sortedPosts.map((post) => (
+    //   <PostExcerpt key={post.id} post={post} />
+    // ));
+    const renderedPosts = sortedPosts.map((post) => (
       <PostExcerpt key={post.id} post={post} />
     ));
+
+    const containerClassname = classnames("posts-container", {
+      disabled: isFetching,
+    });
+
+    content = <div className={containerClassname}>{renderedPosts}</div>;
   } else if (isError) {
     content = <div>{error.toString()}</div>;
   }
@@ -124,6 +129,7 @@ export const PostsList = () => {
   return (
     <section className="posts-list">
       <h2>Posts</h2>
+      <button onClick={refetch}>Refetch Posts</button>
       {/* {renderedPosts} */}
       {content}
     </section>
