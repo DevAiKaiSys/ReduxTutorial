@@ -13,11 +13,12 @@ import {
 } from "@/lib/redux/slices/postsSlice/postsSlice";
 import type { Post } from "@/lib/redux/slices/postsSlice/postsSlice";
 import { Spinner } from "../Spinner";
+import { useGetPostsQuery } from "@/lib/redux/api/apiSlice";
 
 // const PostExcerpt = ({ post }: { post: Post }) => {
-let PostExcerpt: React.FC<{ postId: string }> = ({ postId }) => {
-  const post = useAppSelector((state) => selectPostById(state, postId));
-
+// let PostExcerpt: React.FC<{ postId: string }> = ({ postId }) => {
+// const post = useAppSelector((state) => selectPostById(state, postId));
+let PostExcerpt: React.FC<{ post: Post }> = ({ post }) => {
   return (
     <article className="post-excerpt">
       <h3>{post.title}</h3>
@@ -38,20 +39,27 @@ let PostExcerpt: React.FC<{ postId: string }> = ({ postId }) => {
 PostExcerpt = React.memo(PostExcerpt);
 
 export const PostsList = () => {
-  const dispatch = useAppDispatch();
+  // const dispatch = useAppDispatch();
 
-  // const posts = useAppSelector((state) => state.posts);
-  // const posts = useAppSelector(selectAllPosts);
-  const orderedPostIds = useAppSelector(selectPostIds);
+  // // const posts = useAppSelector((state) => state.posts);
+  // // const posts = useAppSelector(selectAllPosts);
+  // const orderedPostIds = useAppSelector(selectPostIds);
 
-  const postStatus = useAppSelector((state) => state.posts.status);
-  const error = useAppSelector((state) => state.posts.error);
+  // const postStatus = useAppSelector((state) => state.posts.status);
+  // const error = useAppSelector((state) => state.posts.error);
 
-  useEffect(() => {
-    if (postStatus === "idle") {
-      dispatch(fetchPosts());
-    }
-  }, [postStatus, dispatch]);
+  // useEffect(() => {
+  //   if (postStatus === "idle") {
+  //     dispatch(fetchPosts());
+  //   }
+  // }, [postStatus, dispatch]);
+  const {
+    data: posts,
+    isLoading,
+    isSuccess,
+    isError,
+    error,
+  } = useGetPostsQuery();
 
   // const renderedPosts = posts.map((post) => (
   // Sort posts in reverse chronological order by datetime string
@@ -78,22 +86,29 @@ export const PostsList = () => {
 
   let content;
 
-  if (postStatus === "loading") {
-    content = <Spinner text="Loading..." />;
-  } else if (postStatus === "succeeded") {
-    // Sort posts in reverse chronological order by datetime string
-    // const orderedPosts = posts
-    //   .slice()
-    //   .sort((a, b) => (b.date ?? "").localeCompare(a.date ?? ""));
+  // if (postStatus === "loading") {
+  //   content = <Spinner text="Loading..." />;
+  // } else if (postStatus === "succeeded") {
+  //   // Sort posts in reverse chronological order by datetime string
+  //   // const orderedPosts = posts
+  //   //   .slice()
+  //   //   .sort((a, b) => (b.date ?? "").localeCompare(a.date ?? ""));
 
-    // content = orderedPosts.map((post) => (
-    //   <PostExcerpt key={post.id} post={post} />
-    // ));
-    content = orderedPostIds.map((postId) => (
-      <PostExcerpt key={postId} postId={postId} />
-    ));
-  } else if (postStatus === "failed") {
-    content = <div>{error}</div>;
+  //   // content = orderedPosts.map((post) => (
+  //   //   <PostExcerpt key={post.id} post={post} />
+  //   // ));
+  //   content = orderedPostIds.map((postId) => (
+  //     <PostExcerpt key={postId} postId={postId} />
+  //   ));
+  // } else if (postStatus === "failed") {
+  //   content = <div>{error}</div>;
+  // }
+  if (isLoading) {
+    content = <Spinner text="Loading..." />;
+  } else if (isSuccess) {
+    content = posts.map((post) => <PostExcerpt key={post.id} post={post} />);
+  } else if (isError) {
+    content = <div>{error.toString()}</div>;
   }
 
   return (
