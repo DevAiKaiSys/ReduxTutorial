@@ -1,4 +1,6 @@
 import { faker } from "@faker-js/faker";
+import { nanoid } from "@reduxjs/toolkit";
+import { parseISO } from "date-fns";
 
 const NUM_USERS = 3;
 const POSTS_PER_USER = 3;
@@ -62,6 +64,18 @@ export type userFindFirstArgs<ExtArgs = {}> = {
 
 export type SelectSubset<T, U> = {
   [key in keyof T]: key extends keyof U ? T[key] : never;
+};
+
+export function getRandomInt(min: number, max: number) {
+  // min = Math.ceil(min);
+  // max = Math.floor(max);
+  // return Math.floor(rng() * max - min + 1) + min;
+  return faker.number.int({ min, max });
+}
+
+const randomFromArray = <T>(array: T[]) => {
+  const index = getRandomInt(0, array.length - 1);
+  return array[index];
 };
 
 export const db = {
@@ -168,3 +182,43 @@ export const serializePost = (post: Post) => ({
   ...post,
   user: post.user?.id,
 });
+
+/* Random Notifications Generation */
+
+const notificationTemplates = [
+  "poked you",
+  "says hi!",
+  `is glad we're friends`,
+  "sent you a gift",
+];
+
+export function generateRandomNotifications(
+  since: string | undefined,
+  numNotifications: number,
+  db: any
+) {
+  const now = new Date();
+  let pastDate: Date;
+
+  if (since) {
+    pastDate = parseISO(since);
+  } else {
+    pastDate = new Date(now.valueOf());
+    pastDate.setMinutes(pastDate.getMinutes() - 15);
+  }
+
+  // Create N random notifications. We won't bother saving these
+  // in the DB - just generate a new batch and return them.
+  const notifications = [...Array(numNotifications)].map(() => {
+    const user: User = randomFromArray(db.user.getAll());
+    const template = randomFromArray(notificationTemplates);
+    return {
+      id: nanoid(),
+      date: faker.date.between({ from: pastDate, to: now }).toISOString(),
+      message: template,
+      user: user.id,
+    };
+  });
+
+  return notifications;
+}
