@@ -1,6 +1,9 @@
 "use client";
 import { useAppSelector } from "@/lib/redux/hooks";
-import { selectAllPosts } from "@/lib/redux/slices/postsSlice/postsSlice";
+import {
+  selectAllPosts,
+  selectPostsByUser,
+} from "@/lib/redux/slices/postsSlice/postsSlice";
 import { selectUserById } from "@/lib/redux/slices/usersSlice/usersSlice";
 import Link from "next/link";
 import { useParams } from "next/navigation";
@@ -14,10 +17,13 @@ export const UserPage = ({}: /* match */ Props) => {
 
   const user = useAppSelector((state) => selectUserById(state, userId));
 
-  const postsForUser = useAppSelector((state) => {
-    const allPosts = selectAllPosts(state);
-    return allPosts.filter((post) => post.user === userId);
-  });
+  // const postsForUser = useAppSelector((state) => {
+  //   const allPosts = selectAllPosts(state);
+  //   return allPosts.filter((post) => post.user === userId);
+  // });
+  const postsForUser = useAppSelector((state) =>
+    selectPostsByUser(state, userId)
+  );
 
   const postTitles = postsForUser.map((post) => (
     <li key={post.id}>
