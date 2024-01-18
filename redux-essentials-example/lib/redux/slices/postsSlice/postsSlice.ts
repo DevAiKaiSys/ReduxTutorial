@@ -50,6 +50,15 @@ export const fetchPosts = createAsyncThunk("posts/fetchPosts", async () => {
   return response.data;
 });
 
+export const addNewPost = createAsyncThunk(
+  "posts/addNewPost",
+  async (initialPost: NewPost) => {
+    // const response = await client.post("/fakeApi/posts", initialPost);
+    const response = await client.post<Post>("/api/fakeApi/posts", initialPost); // Next.js API Routes
+    return response.data;
+  }
+);
+
 const postsSlice = createSlice({
   name: "posts",
   initialState,
@@ -112,6 +121,9 @@ const postsSlice = createSlice({
       .addCase(fetchPosts.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.error.message || null;
+      })
+      .addCase(addNewPost.fulfilled, (state, action) => {
+        state.posts.push(action.payload);
       });
   },
 });
@@ -151,4 +163,10 @@ export type PostReactions = {
   heart: number;
   rocket: number;
   eyes: number;
+};
+
+export type NewPost = {
+  title: string;
+  content: string;
+  user: string;
 };
