@@ -8,12 +8,16 @@ import { ReactionButtons } from "./ReactionButtons";
 import {
   fetchPosts,
   selectAllPosts,
+  selectPostById,
+  selectPostIds,
 } from "@/lib/redux/slices/postsSlice/postsSlice";
 import type { Post } from "@/lib/redux/slices/postsSlice/postsSlice";
 import { Spinner } from "../Spinner";
 
 // const PostExcerpt = ({ post }: { post: Post }) => {
-let PostExcerpt: React.FC<{ post: Post }> = ({ post }) => {
+let PostExcerpt: React.FC<{ postId: string }> = ({ postId }) => {
+  const post = useAppSelector((state) => selectPostById(state, postId));
+
   return (
     <article className="post-excerpt">
       <h3>{post.title}</h3>
@@ -37,7 +41,8 @@ export const PostsList = () => {
   const dispatch = useAppDispatch();
 
   // const posts = useAppSelector((state) => state.posts);
-  const posts = useAppSelector(selectAllPosts);
+  // const posts = useAppSelector(selectAllPosts);
+  const orderedPostIds = useAppSelector(selectPostIds);
 
   const postStatus = useAppSelector((state) => state.posts.status);
   const error = useAppSelector((state) => state.posts.error);
@@ -77,12 +82,15 @@ export const PostsList = () => {
     content = <Spinner text="Loading..." />;
   } else if (postStatus === "succeeded") {
     // Sort posts in reverse chronological order by datetime string
-    const orderedPosts = posts
-      .slice()
-      .sort((a, b) => (b.date ?? "").localeCompare(a.date ?? ""));
+    // const orderedPosts = posts
+    //   .slice()
+    //   .sort((a, b) => (b.date ?? "").localeCompare(a.date ?? ""));
 
-    content = orderedPosts.map((post) => (
-      <PostExcerpt key={post.id} post={post} />
+    // content = orderedPosts.map((post) => (
+    //   <PostExcerpt key={post.id} post={post} />
+    // ));
+    content = orderedPostIds.map((postId) => (
+      <PostExcerpt key={postId} postId={postId} />
     ));
   } else if (postStatus === "failed") {
     content = <div>{error}</div>;
