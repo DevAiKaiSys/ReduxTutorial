@@ -1,6 +1,8 @@
 import {
+  EntityState,
   PayloadAction,
   createAsyncThunk,
+  createEntityAdapter,
   createSelector,
   createSlice,
   nanoid,
@@ -38,11 +40,22 @@ import { client } from "@/app/api/client";
 //     },
 //   },
 // ];
-const initialState: PostSliceState = {
-  posts: [],
+// const initialState: PostSliceState = {
+//   posts: [],
+//   status: "idle",
+//   error: null,
+// };
+const postsAdapter = createEntityAdapter<Post>({
+  sortComparer: (a, b) => b.date.localeCompare(a.date),
+});
+
+const initialState: EntityState<Post, string> & {
+  status: "idle" | "loading" | "succeeded" | "failed";
+  error: string | null;
+} = postsAdapter.getInitialState({
   status: "idle",
   error: null,
-};
+});
 
 export const fetchPosts = createAsyncThunk("posts/fetchPosts", async () => {
   // const response = await client.get("/fakeApi/posts");
@@ -64,37 +77,38 @@ const postsSlice = createSlice({
   name: "posts",
   initialState,
   reducers: {
-    postAdded: {
-      reducer(state, action: PayloadAction<Post>) {
-        // state.push(action.payload);
-        state.posts.push(action.payload);
-      },
-      prepare(title, content, userId) {
-        return {
-          payload: {
-            id: nanoid(),
-            date: new Date().toISOString(),
-            title,
-            content,
-            user: userId,
-            reactions: {
-              thumbsUp: 0,
-              hooray: 0,
-              heart: 0,
-              rocket: 0,
-              eyes: 0,
-            },
-          },
-        };
-      },
-    },
+    // postAdded: {
+    //   reducer(state, action: PayloadAction<Post>) {
+    //     // state.push(action.payload);
+    //     state.posts.push(action.payload);
+    //   },
+    //   prepare(title, content, userId) {
+    //     return {
+    //       payload: {
+    //         id: nanoid(),
+    //         date: new Date().toISOString(),
+    //         title,
+    //         content,
+    //         user: userId,
+    //         reactions: {
+    //           thumbsUp: 0,
+    //           hooray: 0,
+    //           heart: 0,
+    //           rocket: 0,
+    //           eyes: 0,
+    //         },
+    //       },
+    //     };
+    //   },
+    // },
     reactionAdded(
       state,
       action: PayloadAction<{ postId: string; reaction: keyof PostReactions }>
     ) {
       const { postId, reaction } = action.payload;
       // const existingPost = state.find((post) => post.id === postId);
-      const existingPost = state.posts.find((post) => post.id === postId);
+      // const existingPost = state.posts.find((post) => post.id === postId);
+      const existingPost = state.entities[postId];
       if (existingPost) {
         existingPost.reactions[reaction]++;
       }
@@ -102,7 +116,8 @@ const postsSlice = createSlice({
     postUpdated(state, action) {
       const { id, title, content } = action.payload;
       // const existingPost = state.find((post) => post.id === id);
-      const existingPost = state.posts.find((post) => post.id === id);
+      // const existingPost = state.posts.find((post) => post.id === id);
+      const existingPost = state.entities[id];
       if (existingPost) {
         existingPost.title = title;
         existingPost.content = content;
@@ -117,19 +132,24 @@ const postsSlice = createSlice({
       .addCase(fetchPosts.fulfilled, (state, action) => {
         state.status = "succeeded";
         // Add any fetched posts to the array
-        state.posts = state.posts.concat(action.payload);
+        // state.posts = state.posts.concat(action.payload);
+        // Use the `upsertMany` reducer as a mutating update utility
+        postsAdapter.upsertMany(state, action.payload);
       })
       .addCase(fetchPosts.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.error.message || null;
       })
-      .addCase(addNewPost.fulfilled, (state, action) => {
-        state.posts.push(action.payload);
-      });
+      // .addCase(addNewPost.fulfilled, (state, action) => {
+      //   state.posts.push(action.payload);
+      // });
+      // Use the `addOne` reducer for the fulfilled case
+      .addCase(addNewPost.fulfilled, postsAdapter.addOne);
   },
 });
 
-export const { postAdded, postUpdated, reactionAdded } = postsSlice.actions;
+export const { /* postAdded, */ postUpdated, reactionAdded } =
+  postsSlice.actions;
 
 export default postsSlice.reducer;
 
@@ -137,10 +157,17 @@ export default postsSlice.reducer;
 
 // export const selectPostById = (state: RootState, postId: string) =>
 //   state.posts.find((post) => post.id === postId);
-export const selectAllPosts = (state: RootState) => state.posts.posts;
+// export const selectAllPosts = (state: RootState) => state.posts.posts;
 
-export const selectPostById = (state: RootState, postId: string) =>
-  state.posts.posts.find((post) => post.id === postId);
+// export const selectPostById = (state: RootState, postId: string) =>
+//   state.posts.posts.find((post) => post.id === postId);
+// Export the customized selectors for this adapter using `getSelectors`
+export const {
+  selectAll: selectAllPosts,
+  selectById: selectPostById,
+  selectIds: selectPostIds,
+  // Pass in a selector that returns the posts slice of state
+} = postsAdapter.getSelectors((state: RootState) => state.posts);
 
 export const selectPostsByUser = createSelector(
   [selectAllPosts, (state, userId) => userId],
@@ -148,18 +175,18 @@ export const selectPostsByUser = createSelector(
 );
 
 /* Types */
-export type PostSliceState = {
-  posts: Post[];
-  status: "idle" | "loading" | "succeeded" | "failed";
-  error: string | null;
-};
+// export type PostSliceState = {
+//   posts: Post[];
+//   status: "idle" | "loading" | "succeeded" | "failed";
+//   error: string | null;
+// };
 
 export type Post = {
   id: string;
   title: string;
   content: string;
   user?: string;
-  date?: string;
+  date: string;
   reactions: PostReactions;
 };
 
