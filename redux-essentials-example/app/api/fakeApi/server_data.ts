@@ -64,6 +64,7 @@ export const db = {
       db.users.push(newUser);
       return newUser;
     },
+    getAll: () => db.users,
   },
 
   post: {
