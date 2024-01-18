@@ -1,16 +1,19 @@
 "use client";
+import { useAddNewPostMutation } from "@/lib/redux/api/apiSlice";
 import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
 import { addNewPost } from "@/lib/redux/slices/postsSlice/postsSlice";
 import { selectAllUsers } from "@/lib/redux/slices/usersSlice/usersSlice";
 import React, { useState } from "react";
+import { Spinner } from "../Spinner";
 
 export const AddPostForm = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [userId, setUserId] = useState("");
-  const [addRequestStatus, setAddRequestStatus] = useState("idle");
+  // const [addRequestStatus, setAddRequestStatus] = useState("idle");
 
-  const dispatch = useAppDispatch();
+  // const dispatch = useAppDispatch();
+  const [addNewPost, { isLoading }] = useAddNewPostMutation();
 
   // const users = useAppSelector((state) => state.users);
   const users = useAppSelector(selectAllUsers);
@@ -40,21 +43,23 @@ export const AddPostForm = () => {
 
   // const canSave = Boolean(title) && Boolean(content) && Boolean(userId);
 
-  const canSave =
-    [title, content, userId].every(Boolean) && addRequestStatus === "idle";
+  // const canSave =
+  //   [title, content, userId].every(Boolean) && addRequestStatus === "idle";
+  const canSave = [title, content, userId].every(Boolean) && !isLoading;
 
   const onSavePostClicked = async () => {
     if (canSave) {
       try {
-        setAddRequestStatus("pending");
-        await dispatch(addNewPost({ title, content, user: userId })).unwrap();
+        // setAddRequestStatus("pending");
+        // await dispatch(addNewPost({ title, content, user: userId })).unwrap();
+        await addNewPost({ title, content, user: userId }).unwrap();
         setTitle("");
         setContent("");
         setUserId("");
       } catch (err) {
         console.error("Failed to save the post: ", err);
-      } finally {
-        setAddRequestStatus("idle");
+        // } finally {
+        //   setAddRequestStatus("idle");
       }
     }
   };
@@ -64,6 +69,8 @@ export const AddPostForm = () => {
       {user.name}
     </option>
   ));
+
+  const spinner = isLoading ? <Spinner size="30px" /> : null;
 
   return (
     <section>
@@ -90,9 +97,20 @@ export const AddPostForm = () => {
           value={content}
           onChange={onContentChanged}
         />
-        <button type="button" onClick={onSavePostClicked} disabled={!canSave}>
+        {/* <button type="button" onClick={onSavePostClicked} disabled={!canSave}>
           Save Post
-        </button>
+        </button> */}
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+          }}
+        >
+          <button type="button" onClick={onSavePostClicked} disabled={!canSave}>
+            Save Post
+          </button>
+          {spinner}
+        </div>
       </form>
     </section>
   );
