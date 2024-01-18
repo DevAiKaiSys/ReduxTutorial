@@ -12,7 +12,8 @@ import {
 import type { Post } from "@/lib/redux/slices/postsSlice/postsSlice";
 import { Spinner } from "../Spinner";
 
-const PostExcerpt = ({ post }: { post: Post }) => {
+// const PostExcerpt = ({ post }: { post: Post }) => {
+let PostExcerpt: React.FC<{ post: Post }> = ({ post }) => {
   return (
     <article className="post-excerpt">
       <h3>{post.title}</h3>
@@ -29,6 +30,8 @@ const PostExcerpt = ({ post }: { post: Post }) => {
     </article>
   );
 };
+
+PostExcerpt = React.memo(PostExcerpt);
 
 export const PostsList = () => {
   const dispatch = useAppDispatch();
