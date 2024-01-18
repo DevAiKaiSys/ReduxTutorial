@@ -23,14 +23,14 @@ type UserData = {
   username: string;
 };
 
-type Post = {
+export type Post = {
   id: string;
   title: string;
   date: string;
   content: string;
   reactions: Reaction;
   comments: Comment[];
-  user: User;
+  user: User | null;
 };
 type Comment = {
   id: string;
@@ -46,6 +46,22 @@ type Reaction = {
   rocket: number;
   eyes: number;
   post: Post;
+};
+
+type StringNullableFilter = {
+  equals?: string | null;
+};
+
+type UserWhereInput = {
+  id?: StringNullableFilter | string | null;
+};
+
+export type userFindFirstArgs<ExtArgs = {}> = {
+  where?: UserWhereInput;
+} & ExtArgs;
+
+export type SelectSubset<T, U> = {
+  [key in keyof T]: key extends keyof U ? T[key] : never;
 };
 
 export const db = {
@@ -65,6 +81,18 @@ export const db = {
       return newUser;
     },
     getAll: () => db.users,
+    findFirst: (args: SelectSubset<userFindFirstArgs, userFindFirstArgs>) => {
+      const { where } = args || {};
+
+      if (where?.id instanceof Object && "equals" in where.id) {
+        if (typeof where.id.equals === "string") {
+          const value = where.id.equals;
+          return db.users.find((user) => user.id === value) || null;
+        }
+      }
+
+      return null;
+    },
   },
 
   post: {
@@ -138,5 +166,5 @@ for (let i = 0; i < NUM_USERS; i++) {
 
 export const serializePost = (post: Post) => ({
   ...post,
-  user: post.user.id,
+  user: post.user?.id,
 });
