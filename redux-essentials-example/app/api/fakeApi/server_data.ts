@@ -62,6 +62,14 @@ export type userFindFirstArgs<ExtArgs = {}> = {
   where?: UserWhereInput;
 } & ExtArgs;
 
+type PostWhereInput = {
+  id?: StringNullableFilter | string | null;
+};
+
+export type postFindFirstArgs<ExtArgs = {}> = {
+  where?: PostWhereInput;
+} & ExtArgs;
+
 export type SelectSubset<T, U> = {
   [key in keyof T]: key extends keyof U ? T[key] : never;
 };
@@ -127,6 +135,18 @@ export const db = {
       return newPost;
     },
     getAll: () => db.posts,
+    findFirst: (args: SelectSubset<postFindFirstArgs, postFindFirstArgs>) => {
+      const { where } = args || {};
+
+      if (where?.id instanceof Object && "equals" in where.id) {
+        if (typeof where.id.equals === "string") {
+          const value = where.id.equals;
+          return db.posts.find((post) => post.id === value) || null;
+        }
+      }
+
+      return null;
+    },
   },
 
   reaction: {
