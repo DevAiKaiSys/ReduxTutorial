@@ -1,6 +1,7 @@
 import { client } from "@/app/api/client";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { Post } from "../postsSlice/postsSlice";
+import { RootState } from "../../store";
 
 const initialState: UserSliceState = [
   // { id: "0", name: "Tianna Jenkins" },
@@ -26,6 +27,11 @@ const usersSlice = createSlice({
 });
 
 export default usersSlice.reducer;
+
+export const selectAllUsers = (state: RootState) => state.users;
+
+export const selectUserById = (state: RootState, userId: string) =>
+  state.users.find((user) => user.id === userId);
 
 export type UserSliceState = User[];
 
