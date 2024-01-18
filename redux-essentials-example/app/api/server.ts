@@ -108,7 +108,7 @@ const createUserData = () => {
   };
 };
 
-const createPostData = (user) => {
+const createPostData = (user: any) => {
   return {
     title: faker.lorem.words(),
     date: faker.date.recent(RECENT_NOTIFICATIONS_DAYS).toISOString(),
@@ -128,7 +128,7 @@ for (let i = 0; i < NUM_USERS; i++) {
   }
 }
 
-const serializePost = (post) => ({
+const serializePost = (post: any) => ({
   ...post,
   user: post.user.id,
 });
@@ -238,15 +238,15 @@ export const worker = setupWorker(...handlers);
 
 const socketServer = new MockSocketServer("ws://localhost");
 
-let currentSocket;
+let currentSocket: any;
 
-const sendMessage = (socket, obj) => {
+const sendMessage = (socket: any, obj: any) => {
   socket.send(JSON.stringify(obj));
 };
 
 // Allow our UI to fake the server pushing out some notifications over the websocket,
 // as if other users were interacting with the system.
-const sendRandomNotifications = (socket, since) => {
+const sendRandomNotifications = (socket: any, since: any) => {
   const numNotifications = getRandomInt(1, 5);
 
   const notifications = generateRandomNotifications(
@@ -258,14 +258,14 @@ const sendRandomNotifications = (socket, since) => {
   sendMessage(socket, { type: "notifications", payload: notifications });
 };
 
-export const forceGenerateNotifications = (since) => {
+export const forceGenerateNotifications = (since: any) => {
   sendRandomNotifications(currentSocket, since);
 };
 
 socketServer.on("connection", (socket) => {
   currentSocket = socket;
 
-  socket.on("message", (data) => {
+  socket.on("message", (data: any) => {
     const message = JSON.parse(data);
 
     switch (message.type) {
@@ -289,9 +289,13 @@ const notificationTemplates = [
   "sent you a gift",
 ];
 
-function generateRandomNotifications(since, numNotifications, db) {
+function generateRandomNotifications(
+  since: any,
+  numNotifications: any,
+  db: any
+) {
   const now = new Date();
-  let pastDate;
+  let pastDate: any;
 
   if (since) {
     pastDate = parseISO(since);
@@ -303,7 +307,7 @@ function generateRandomNotifications(since, numNotifications, db) {
   // Create N random notifications. We won't bother saving these
   // in the DB - just generate a new batch and return them.
   const notifications = [...Array(numNotifications)].map(() => {
-    const user = randomFromArray(db.user.getAll());
+    const user: any = randomFromArray(db.user.getAll());
     const template = randomFromArray(notificationTemplates);
     return {
       id: nanoid(),

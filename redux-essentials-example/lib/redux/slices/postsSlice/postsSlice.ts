@@ -44,7 +44,8 @@ const initialState: PostSliceState = {
 };
 
 export const fetchPosts = createAsyncThunk("posts/fetchPosts", async () => {
-  const response = await client.get("/fakeApi/posts");
+  // const response = await client.get("/fakeApi/posts");
+  const response = await client.get("/api/fakeApi/posts"); // Next.js API Routes
   return response.data;
 });
 
