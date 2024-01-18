@@ -45,7 +45,8 @@ const initialState: PostSliceState = {
 
 export const fetchPosts = createAsyncThunk("posts/fetchPosts", async () => {
   // const response = await client.get("/fakeApi/posts");
-  const response = await client.get("/api/fakeApi/posts"); // Next.js API Routes
+  // return response.data;
+  const response = await client.get<Post[]>("/api/fakeApi/posts"); // Next.js API Routes
   return response.data;
 });
 
@@ -97,6 +98,21 @@ const postsSlice = createSlice({
         existingPost.content = content;
       }
     },
+  },
+  extraReducers(builder) {
+    builder
+      .addCase(fetchPosts.pending, (state, action) => {
+        state.status = "loading";
+      })
+      .addCase(fetchPosts.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        // Add any fetched posts to the array
+        state.posts = state.posts.concat(action.payload);
+      })
+      .addCase(fetchPosts.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.error.message || null;
+      });
   },
 });
 
