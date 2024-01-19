@@ -24,6 +24,34 @@ export default function filtersReducer(
         status: action.payload,
       };
     }
+    case "filters/colorFilterChanged": {
+      let { color, changeType } = action.payload;
+      const { colors } = state;
+
+      switch (changeType) {
+        case "added": {
+          if (colors.includes(color)) {
+            // This color already is set as a filter. Don't change the state.
+            return state;
+          }
+
+          return {
+            ...state,
+            colors: state.colors.concat(color),
+          };
+        }
+        case "removed": {
+          return {
+            ...state,
+            colors: state.colors.filter(
+              (existingColor) => existingColor !== color
+            ),
+          };
+        }
+        default:
+          return state;
+      }
+    }
     default:
       return state;
   }
@@ -38,4 +66,9 @@ type FilterSliceState = {
 type FilterStatus = (typeof StatusFilters)[keyof typeof StatusFilters];
 
 // Action types
-export type FilterAction = PayloadAction<string, "filters/statusFilterChanged">;
+export type FilterAction =
+  | PayloadAction<string, "filters/statusFilterChanged">
+  | PayloadAction<
+      { color: string; changeType: "added" | "removed" },
+      "filters/colorFilterChanged"
+    >;

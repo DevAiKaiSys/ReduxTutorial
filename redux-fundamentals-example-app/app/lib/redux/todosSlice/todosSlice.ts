@@ -36,6 +36,30 @@ export default function todosReducer(state = initialState, action: TodoAction) {
         };
       });
     }
+    case "todos/colorSelected": {
+      const { color, todoId } = action.payload;
+      return state.map((todo) => {
+        if (todo.id !== todoId) {
+          return todo;
+        }
+
+        return {
+          ...todo,
+          color,
+        };
+      });
+    }
+    case "todos/todoDeleted": {
+      return state.filter((todo) => todo.id !== action.payload);
+    }
+    case "todos/allCompleted": {
+      return state.map((todo) => {
+        return { ...todo, completed: true };
+      });
+    }
+    case "todos/completedCleared": {
+      return state.filter((todo) => !todo.completed);
+    }
     default:
       return state;
   }
@@ -54,4 +78,8 @@ type Todo = {
 // Action types
 export type TodoAction =
   | PayloadAction<string, "todos/todoAdded">
-  | PayloadAction<number, "todos/todoToggled">;
+  | PayloadAction<number, "todos/todoToggled">
+  | PayloadAction<{ color: string; todoId: number }, "todos/colorSelected">
+  | PayloadAction<number, "todos/todoDeleted">
+  | PayloadAction<void, "todos/allCompleted">
+  | PayloadAction<void, "todos/completedCleared">;
