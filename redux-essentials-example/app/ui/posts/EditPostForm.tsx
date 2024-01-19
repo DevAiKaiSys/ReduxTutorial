@@ -6,6 +6,8 @@ import {
   postUpdated,
   selectPostById,
 } from "@/lib/redux/slices/postsSlice/postsSlice";
+import { useGetPostQuery, useEditPostMutation } from "@/lib/redux/api/apiSlice";
+import { Spinner } from "../Spinner";
 
 type Props = {};
 
@@ -16,7 +18,9 @@ export const EditPostForm = ({}: /* match */ Props) => {
   // const post = useAppSelector((state) =>
   //   state.posts.find((post) => post.id === postId)
   // );
-  const post = useAppSelector((state) => selectPostById(state, postId));
+  // const post = useAppSelector((state) => selectPostById(state, postId));
+  const { data: post } = useGetPostQuery(postId);
+  const [updatePost, { isLoading }] = useEditPostMutation();
 
   const [title, setTitle] = useState(post?.title);
   const [content, setContent] = useState(post?.content);
@@ -30,13 +34,21 @@ export const EditPostForm = ({}: /* match */ Props) => {
   const onContentChanged = (e: React.ChangeEvent<HTMLTextAreaElement>) =>
     setContent(e.target.value);
 
-  const onSavePostClicked = () => {
+  // const onSavePostClicked = () => {
+  //   if (title && content) {
+  //     dispatch(postUpdated({ id: postId, title, content }));
+  //     //   history.push(`/posts/${postId}`);
+  //     router.push(`/posts/${postId}`);
+  //   }
+  // };
+  const onSavePostClicked = async () => {
     if (title && content) {
-      dispatch(postUpdated({ id: postId, title, content }));
-      //   history.push(`/posts/${postId}`);
+      await updatePost({ id: postId, title, content });
       router.push(`/posts/${postId}`);
     }
   };
+
+  const spinner = isLoading ? <Spinner text="Saving..." /> : null;
 
   return (
     <section>
@@ -50,6 +62,7 @@ export const EditPostForm = ({}: /* match */ Props) => {
           placeholder="What's on your mind?"
           value={title}
           onChange={onTitleChanged}
+          disabled={isLoading}
         />
         <label htmlFor="postContent">Content:</label>
         <textarea
@@ -57,11 +70,13 @@ export const EditPostForm = ({}: /* match */ Props) => {
           name="postContent"
           value={content}
           onChange={onContentChanged}
+          disabled={isLoading}
         />
       </form>
-      <button type="button" onClick={onSavePostClicked}>
+      <button type="button" onClick={onSavePostClicked} disabled={isLoading}>
         Save Post
       </button>
+      {spinner}
     </section>
   );
 };

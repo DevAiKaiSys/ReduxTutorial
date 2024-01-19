@@ -198,8 +198,6 @@ export type PostReactions = {
   eyes: number;
 };
 
-export type NewPost = {
-  title: string;
-  content: string;
-  user: string;
-};
+export type NewPost = Omit<Post, "id" | "date" | "reactions">;
+
+export type EditPost = Omit<Post, "user" | "date" | "reactions">;

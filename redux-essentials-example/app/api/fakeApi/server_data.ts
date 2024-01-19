@@ -70,6 +70,17 @@ export type postFindFirstArgs<ExtArgs = {}> = {
   where?: PostWhereInput;
 } & ExtArgs;
 
+type postUpdateInput = {
+  id?: StringNullableFilter | string | null;
+  title?: StringNullableFilter | string | null;
+  content?: StringNullableFilter | string | null;
+};
+
+export type postUpdateArgs<ExtArgs = {}> = {
+  where?: PostWhereInput;
+  data: postUpdateInput;
+} & ExtArgs;
+
 export type SelectSubset<T, U> = {
   [key in keyof T]: key extends keyof U ? T[key] : never;
 };
@@ -145,6 +156,32 @@ export const db = {
         }
       }
 
+      return null;
+    },
+    update: (args: SelectSubset<postUpdateArgs, postUpdateArgs>) => {
+      const { where, data } = args || {};
+
+      if (where?.id instanceof Object && "equals" in where.id) {
+        const postId = where.id.equals;
+        // Find the post based on the provided 'id'
+        const postToUpdate = db.posts.find((post) => post.id === postId);
+
+        // If the post is found, update its properties
+        if (postToUpdate) {
+          if (typeof data.title === "string") {
+            postToUpdate.title = data.title;
+          }
+          if (typeof data.content === "string") {
+            postToUpdate.content = data.content;
+          }
+
+          // You can update other properties similarly
+
+          return postToUpdate;
+        }
+      }
+
+      // Return null if the post is not found or if the update conditions are not met
       return null;
     },
   },
