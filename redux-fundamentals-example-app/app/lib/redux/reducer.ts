@@ -1,7 +1,7 @@
 // import { PayloadAction } from "@reduxjs/toolkit";
 import { combineReducers } from "redux";
-import filtersReducer, { FilterAction } from "./filtersSlice/filtersSlice";
-import todosReducer, { TodoAction } from "./todosSlice/todosSlice";
+import filtersReducer from "./filtersSlice/filtersSlice";
+import todosReducer from "./todosSlice/todosSlice";
 
 // const initialState: AppState = {
 //   todos: [
@@ -95,7 +95,7 @@ import todosReducer, { TodoAction } from "./todosSlice/todosSlice";
 //     filters: filtersReducer(state.filters, action as FilterAction),
 //   };
 // }
-const rootReducer = combineReducers({
+const rootReducer: any = combineReducers({
   // Define a top-level state field named `todos`, handled by `todosReducer`
   todos: todosReducer,
   filters: filtersReducer,

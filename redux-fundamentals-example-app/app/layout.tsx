@@ -50,10 +50,13 @@ export default function RootLayout({
 
   // store.dispatch({ type: "todos/todoAdded", payload: "Try creating a store" });
   // console.log("Dispatch complete");
-  // log: 'Hi!'
+  // // log: 'Hi!'
 
-  console.log("State after dispatch: ", store.getState());
-  // log: {todos: [...], filters: {status, colors}, meaningOfLife: 42}
+  // console.log("State after dispatch: ", store.getState());
+  // // log: {todos: [...], filters: {status, colors}, meaningOfLife: 42}
+  // log: '1'
+  // log: '2'
+  // log: '3'
 
   return (
     <html lang="en">
