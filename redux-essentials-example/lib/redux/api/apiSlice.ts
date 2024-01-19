@@ -9,17 +9,22 @@ export const apiSlice = createApi({
   // All of our requests will have URLs starting with '/fakeApi'
   //   baseQuery: fetchBaseQuery({ baseUrl: "/fakeApi" }),
   baseQuery: fetchBaseQuery({ baseUrl: "/api/fakeApi" }), // Next.js API Routes
-  tagTypes: ["Post"],
+  tagTypes: ["Post"] as string[],
   // The "endpoints" represent operations and requests for this server
   endpoints: (builder) => ({
     // The `getPosts` endpoint is a "query" operation that returns data
     getPosts: builder.query<Post[], void>({
       // The URL for the request is '/fakeApi/posts'
       query: () => "/posts",
-      providesTags: ["Post"],
+      // providesTags: ["Post"],
+      providesTags: (result = [], error, arg) => [
+        "Post",
+        ...result.map(({ id }) => ({ type: "Post", id })),
+      ],
     }),
-    getPost: builder.query<Post, string>({
+    getPost: builder.query<Post, any>({
       query: (postId) => `/posts/${postId}`,
+      providesTags: (result, error, arg) => [{ type: "Post", id: arg }],
     }),
     addNewPost: builder.mutation<Post, NewPost>({
       query: (initialPost) => ({
@@ -36,6 +41,7 @@ export const apiSlice = createApi({
         method: "PATCH",
         body: post,
       }),
+      invalidatesTags: (result, error, arg) => [{ type: "Post", id: arg.id }],
     }),
   }),
 });
