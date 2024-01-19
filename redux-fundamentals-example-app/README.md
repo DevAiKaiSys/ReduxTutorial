@@ -14,3 +14,9 @@ npm install --save-dev ts-jest @types/jest
 npx ts-jest config:init
 npx jest
 ```
+
+## Dev Tool
+
+```
+npm install --save-dev redux-devtools-extension --legacy-peer-deps
+```

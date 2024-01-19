@@ -1,20 +1,7 @@
-import {
-  StoreEnhancer,
-  applyMiddleware,
-  compose,
-  createStore,
-  Store,
-  Middleware,
-  MiddlewareAPI,
-  Dispatch,
-} from "redux";
+import { StoreEnhancer, applyMiddleware, createStore } from "redux";
+import { composeWithDevTools } from "redux-devtools-extension";
 import rootReducer from "./reducer";
-import {
-  includeMeaningOfLife,
-  sayHiOnDispatch,
-} from "./exampleAddons/enhancers";
 import { print1, print2, print3 } from "./exampleAddons/middleware";
-import { TodoAction } from "./todosSlice/todosSlice";
 
 let preloadedState;
 // const persistedTodosString = localStorage!.getItem("todos"); // Error: localStorage is not defined
@@ -38,35 +25,42 @@ let preloadedState;
 
 // // Pass enhancer as the second arg, since there's no preloadedState
 // const store: Store = createStore(rootReducer, middlewareEnhancer);
-const alwaysReturnHelloMiddleware: Middleware =
-  (storeAPI) => (next) => (action) => {
-    const originalResult = next(action);
-    // Ignore the original result, return something else
-    return "Hello!";
-  };
+// const alwaysReturnHelloMiddleware: Middleware =
+//   (storeAPI) => (next) => (action) => {
+//     const originalResult = next(action);
+//     // Ignore the original result, return something else
+//     return "Hello!";
+//   };
 
-const delayedMessageMiddleware: any =
-  (storeAPI: MiddlewareAPI) =>
-  (next: Dispatch<TodoAction>) =>
-  (action: TodoAction) => {
-    if (action.type === "todos/todoAdded") {
-      setTimeout(() => {
-        console.log("Added a new todo: ", action.payload);
-      }, 1000);
-    }
+// const delayedMessageMiddleware: any =
+//   (storeAPI: MiddlewareAPI) =>
+//   (next: Dispatch<TodoAction>) =>
+//   (action: TodoAction) => {
+//     if (action.type === "todos/todoAdded") {
+//       setTimeout(() => {
+//         console.log("Added a new todo: ", action.payload);
+//       }, 1000);
+//     }
 
-    return next(action);
-  };
+//     return next(action);
+//   };
 
-const middlewareEnhancer = applyMiddleware(
-  alwaysReturnHelloMiddleware,
-  delayedMessageMiddleware
+// const middlewareEnhancer = applyMiddleware(
+//   alwaysReturnHelloMiddleware,
+//   delayedMessageMiddleware
+// );
+// const store = createStore(rootReducer, middlewareEnhancer);
+
+// const dispatchResult = store.dispatch({ type: "some/action" });
+// console.log(dispatchResult);
+// // log: 'Hello!'
+const composedEnhancer = composeWithDevTools(
+  // EXAMPLE: Add whatever middleware you actually want to use here
+  applyMiddleware(print1, print2, print3)
+  // other store enhancers if any
 );
-const store = createStore(rootReducer, middlewareEnhancer);
 
-const dispatchResult = store.dispatch({ type: "some/action" });
-console.log(dispatchResult);
-// log: 'Hello!'
+const store = createStore(rootReducer, composedEnhancer);
 
 export default store;
 
