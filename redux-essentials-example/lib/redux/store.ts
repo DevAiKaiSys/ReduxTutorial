@@ -1,7 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit";
 
 import postsReducer from "./slices/postsSlice/postsSlice";
-import usersReducer from "./slices/usersSlice/usersSlice";
+// import usersReducer from "./slices/usersSlice/usersSlice";
 import notificationsReducer from "./slices/notificationsSlice/notificationsSlice";
 import { apiSlice } from "./api/apiSlice";
 
@@ -9,7 +9,7 @@ export const makeStore = () => {
   return configureStore({
     reducer: {
       posts: postsReducer,
-      users: usersReducer,
+      // users: usersReducer,
       notifications: notificationsReducer,
       [apiSlice.reducerPath]: apiSlice.reducer,
     },
