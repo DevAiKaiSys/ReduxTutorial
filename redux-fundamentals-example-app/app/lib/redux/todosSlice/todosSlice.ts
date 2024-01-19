@@ -52,6 +52,6 @@ type Todo = {
 };
 
 // Action types
-type TodoAction =
+export type TodoAction =
   | PayloadAction<string, "todos/todoAdded">
   | PayloadAction<number, "todos/todoToggled">;

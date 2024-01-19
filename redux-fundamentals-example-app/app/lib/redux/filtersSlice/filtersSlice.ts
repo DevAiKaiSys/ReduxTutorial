@@ -38,4 +38,4 @@ type FilterSliceState = {
 type FilterStatus = (typeof StatusFilters)[keyof typeof StatusFilters];
 
 // Action types
-type FilterAction = PayloadAction<string, "filters/statusFilterChanged">;
+export type FilterAction = PayloadAction<string, "filters/statusFilterChanged">;
