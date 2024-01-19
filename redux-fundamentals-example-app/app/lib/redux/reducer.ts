@@ -1,4 +1,5 @@
 // import { PayloadAction } from "@reduxjs/toolkit";
+import { combineReducers } from "redux";
 import filtersReducer, { FilterAction } from "./filtersSlice/filtersSlice";
 import todosReducer, { TodoAction } from "./todosSlice/todosSlice";
 
@@ -82,18 +83,25 @@ import todosReducer, { TodoAction } from "./todosSlice/todosSlice";
 //       return state;
 //   }
 // }
-export default function rootReducer(
-  state: AppState /* = {} */,
-  action: AppAction
-) {
-  // always return a new object for the root state
-  return {
-    // the value of `state.todos` is whatever the todos reducer returns
-    todos: todosReducer(state.todos, action as TodoAction),
-    // For both reducers, we only pass in their slice of the state
-    filters: filtersReducer(state.filters, action as FilterAction),
-  };
-}
+// export default function rootReducer(
+//   state: AppState /* = {} */,
+//   action: AppAction
+// ) {
+//   // always return a new object for the root state
+//   return {
+//     // the value of `state.todos` is whatever the todos reducer returns
+//     todos: todosReducer(state.todos, action as TodoAction),
+//     // For both reducers, we only pass in their slice of the state
+//     filters: filtersReducer(state.filters, action as FilterAction),
+//   };
+// }
+const rootReducer = combineReducers({
+  // Define a top-level state field named `todos`, handled by `todosReducer`
+  todos: todosReducer,
+  filters: filtersReducer,
+});
+
+export default rootReducer;
 
 /* Types */
 type AppState = {
