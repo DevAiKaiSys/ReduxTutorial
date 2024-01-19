@@ -1,6 +1,7 @@
 // Import the RTK Query methods from the React-specific entry point
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { EditPost, NewPost, Post } from "../slices/postsSlice/postsSlice";
+import { User } from "../slices/usersSlice/usersSlice";
 
 // Define our single API slice object
 export const apiSlice = createApi({
@@ -26,6 +27,9 @@ export const apiSlice = createApi({
       query: (postId) => `/posts/${postId}`,
       providesTags: (result, error, arg) => [{ type: "Post", id: arg }],
     }),
+    getUsers: builder.query<User[], void>({
+      query: () => "/users",
+    }),
     addNewPost: builder.mutation<Post, NewPost>({
       query: (initialPost) => ({
         url: "/posts",
@@ -50,6 +54,7 @@ export const apiSlice = createApi({
 export const {
   useGetPostsQuery,
   useGetPostQuery,
+  useGetUsersQuery,
   useAddNewPostMutation,
   useEditPostMutation,
 } = apiSlice;
