@@ -104,24 +104,24 @@ const rootReducer = combineReducers({
 export default rootReducer;
 
 /* Types */
-type AppState = {
-  todos: Todo[];
-  filters: {
-    status: "All";
-    colors: string[];
-  };
-};
+// type AppState = {
+//   todos: Todo[];
+//   filters: {
+//     status: "All";
+//     colors: string[];
+//   };
+// };
 
-type Todo = {
-  id: number;
-  text: string;
-  completed: boolean;
-  color?: string; // Color is optional
-};
+// type Todo = {
+//   id: number;
+//   text: string;
+//   completed: boolean;
+//   color?: string; // Color is optional
+// };
 
-// Action types
-type AppAction =
-  // | PayloadAction<string, "todos/todoAdded">
-  // | PayloadAction<number, "todos/todoToggled">
-  // | PayloadAction<string, "filters/statusFilterChanged">;
-  TodoAction | FilterAction;
+// // Action types
+// type AppAction =
+//   // | PayloadAction<string, "todos/todoAdded">
+//   // | PayloadAction<number, "todos/todoToggled">
+//   // | PayloadAction<string, "filters/statusFilterChanged">;
+//   TodoAction | FilterAction;
