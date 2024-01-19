@@ -201,3 +201,8 @@ export type PostReactions = {
 export type NewPost = Omit<Post, "id" | "date" | "reactions">;
 
 export type EditPost = Omit<Post, "user" | "date" | "reactions">;
+
+export type AddReaction = {
+  postId: string;
+  reaction: keyof PostReactions;
+};

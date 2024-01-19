@@ -40,7 +40,7 @@ type Comment = {
   text: string;
   post: Post;
 };
-type Reaction = {
+export type Reaction = {
   id: string;
   thumbsUp: number;
   hooray: number;
@@ -70,10 +70,23 @@ export type postFindFirstArgs<ExtArgs = {}> = {
   where?: PostWhereInput;
 } & ExtArgs;
 
+type NumberNullableFilter = {
+  equals?: number | null;
+};
+
+type reactionsUpdateInput = {
+  thumbsUp: NumberNullableFilter | number | null;
+  hooray: NumberNullableFilter | number | null;
+  heart: NumberNullableFilter | number | null;
+  rocket: NumberNullableFilter | number | null;
+  eyes: NumberNullableFilter | number | null;
+};
+
 type postUpdateInput = {
   id?: StringNullableFilter | string | null;
   title?: StringNullableFilter | string | null;
   content?: StringNullableFilter | string | null;
+  reactions?: reactionsUpdateInput;
 };
 
 export type postUpdateArgs<ExtArgs = {}> = {
@@ -173,6 +186,9 @@ export const db = {
           }
           if (typeof data.content === "string") {
             postToUpdate.content = data.content;
+          }
+          if (typeof data.reactions === "object") {
+            postToUpdate.reactions = data.reactions as Reaction;
           }
 
           // You can update other properties similarly
