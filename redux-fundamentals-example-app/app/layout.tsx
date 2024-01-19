@@ -28,7 +28,7 @@ export default function RootLayout({
 
   // // Now, dispatch some actions
 
-  console.log("Dispatching action");
+  // console.log("Dispatching action");
   store.dispatch({ type: "todos/todoAdded", payload: "Learn about actions" });
   // store.dispatch({ type: "todos/todoAdded", payload: "Learn about reducers" });
   // store.dispatch({ type: "todos/todoAdded", payload: "Learn about stores" });
@@ -49,7 +49,11 @@ export default function RootLayout({
   // // Dispatch one more action to see what happens
 
   // store.dispatch({ type: "todos/todoAdded", payload: "Try creating a store" });
-  console.log("Dispatch complete");
+  // console.log("Dispatch complete");
+  // log: 'Hi!'
+
+  console.log("State after dispatch: ", store.getState());
+  // log: {todos: [...], filters: {status, colors}, meaningOfLife: 42}
 
   return (
     <html lang="en">
