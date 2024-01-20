@@ -63,7 +63,7 @@ type FilterSliceState = {
   colors: string[];
 };
 
-type FilterStatus = (typeof StatusFilters)[keyof typeof StatusFilters];
+export type FilterStatus = (typeof StatusFilters)[keyof typeof StatusFilters];
 
 // Action types
 export type FilterAction =

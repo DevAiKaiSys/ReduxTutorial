@@ -1,21 +1,18 @@
 import Image from "next/image";
 import styles from "./page.module.css";
+import Header from "./ui/header/Header";
+import Footer from "./ui/footer/Footer";
+import TodoList from "./ui/todos/TodoList";
 
 export default function Home() {
   return (
-    <div className="App">
-      <nav>
-        <section>
-          <h1>Redux Fundamentals Example</h1>
-
-          <div className="navContent">
-            <div className="navLinks"></div>
-          </div>
-        </section>
-      </nav>
-      <section>
-        <h2>Welcome to the Redux Fundamentals example app!</h2>
-      </section>
-    </div>
+    <>
+      <h2>Todos</h2>
+      <div className="todoapp">
+        <Header />
+        <TodoList />
+        <Footer />
+      </div>
+    </>
   );
 }

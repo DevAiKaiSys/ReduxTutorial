@@ -3,6 +3,7 @@
 ```
 npm install @reduxjs/toolkit
 npm install redux
+npm install react-redux
 ```
 
 ## Unit Testing

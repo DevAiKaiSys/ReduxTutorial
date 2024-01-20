@@ -69,7 +69,7 @@ export default function todosReducer(state = initialState, action: TodoAction) {
 /* Types */
 type TodoSliceState = Todo[];
 
-type Todo = {
+export type Todo = {
   id: number;
   text: string;
   completed: boolean;
