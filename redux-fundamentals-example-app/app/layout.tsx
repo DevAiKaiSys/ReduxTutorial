@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import "./primitiveui.css";
+import StoreProvider from "./ui/providers";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -16,17 +17,19 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={inter.className}>
-        <nav>
-          <section>
-            <h1>Redux Fundamentals Example</h1>
-          </section>
-        </nav>
-        <main>
-          <section className="medium-container">{children}</section>
-        </main>
-      </body>
-    </html>
+    <StoreProvider>
+      <html lang="en">
+        <body className={inter.className}>
+          <nav>
+            <section>
+              <h1>Redux Fundamentals Example</h1>
+            </section>
+          </nav>
+          <main>
+            <section className="medium-container">{children}</section>
+          </main>
+        </body>
+      </html>
+    </StoreProvider>
   );
 }
