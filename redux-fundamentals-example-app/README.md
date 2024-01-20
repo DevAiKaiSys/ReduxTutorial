@@ -4,6 +4,7 @@
 npm install @reduxjs/toolkit
 npm install redux
 npm install react-redux
+npm install redux-thunk
 ```
 
 ## Unit Testing
@@ -20,4 +21,13 @@ npx jest
 
 ```
 npm install --save-dev redux-devtools-extension --legacy-peer-deps
+```
+
+### Fake Data
+
+```
+npm install --save-dev miragejs
+npm install @faker-js/faker --save-dev
+npm install seedrandom
+npm i --save-dev @types/seedrandom
 ```
