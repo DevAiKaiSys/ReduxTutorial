@@ -8,7 +8,9 @@ import {
   FilterStatus,
   StatusFilters,
 } from "@/app/lib/redux/filtersSlice/filtersSlice";
+import { ReduxState } from "@/app/lib/redux/store";
 import React from "react";
+import { useSelector } from "react-redux";
 
 const RemainingTodos = ({ count }: { count: number }) => {
   const suffix = count === 1 ? "" : "s";
@@ -92,9 +94,15 @@ const ColorFilters = ({
 };
 
 const Footer = () => {
-  const colors: AvailableColor[] = [];
-  const status = StatusFilters.All;
-  const todosRemaining = 1;
+  // const colors: AvailableColor[] = [];
+  // const status = StatusFilters.All;
+  // const todosRemaining = 1;
+  const todosRemaining = useSelector((state: ReduxState) => {
+    const uncompletedTodos = state.todos.filter((todo) => !todo.completed);
+    return uncompletedTodos.length;
+  });
+
+  const { status, colors } = useSelector((state: ReduxState) => state.filters);
 
   const onColorChange = (
     color: AvailableColor,
